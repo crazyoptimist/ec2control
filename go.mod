@@ -1,4 +1,4 @@
-module start-stop-ec2
+module ec2control
 
 go 1.20
 

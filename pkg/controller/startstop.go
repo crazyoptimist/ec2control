@@ -1,4 +1,4 @@
-package StartStopInstances
+package controller
 
 import (
 	"github.com/aws/aws-sdk-go/aws"

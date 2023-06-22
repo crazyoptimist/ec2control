@@ -1,4 +1,4 @@
-package StartStopInstances
+package controller
 
 import (
 	"errors"

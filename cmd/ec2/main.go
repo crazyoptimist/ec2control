@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 
-	StartStopInstances "start-stop-ec2/pkg/StartStopInstances"
+	controller "ec2control/pkg/controller"
 )
 
 func main() {
@@ -28,7 +28,7 @@ func main() {
 	svc := ec2.New(sess)
 
 	if *state == "START" {
-		err := StartStopInstances.StartInstance(svc, instanceID)
+		err := controller.StartInstance(svc, instanceID)
 		if err != nil {
 			fmt.Println("Got an error starting instance")
 			fmt.Println(err)
@@ -37,7 +37,7 @@ func main() {
 
 		fmt.Println("Started instance with ID " + *instanceID)
 	} else if *state == "STOP" {
-		err := StartStopInstances.StopInstance(svc, instanceID)
+		err := controller.StopInstance(svc, instanceID)
 		if err != nil {
 			fmt.Println("Got an error stopping the instance")
 			fmt.Println(err)
