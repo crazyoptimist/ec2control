@@ -12,11 +12,9 @@ bin
 # Live reload(Air)
 .tmp
 
-# Dot env file
-**/.env.*
-**/*.env
-!.env.example
-!.env.test
+# Config file
+*.toml
+.env
 
 # 3rd party dependencies
 vendor

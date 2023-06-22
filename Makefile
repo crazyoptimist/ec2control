@@ -1,3 +1,5 @@
+run:
+	go run ./cmd/ec2
 test:
 	go test -v ./...
 vet:
