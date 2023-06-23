@@ -1,0 +1,29 @@
+name: Test & Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    types: [opened, edited, synchronize, reopened, closed]
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.20
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Examine
+      run: go vet -v ./...
+
+    - name: Build
+      run: go build -v ./...
