@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"runtime"
 
@@ -16,15 +15,21 @@ import (
 )
 
 func main() {
-	loadConfig()
+	err := loadConfig()
+	if err != nil {
+		fmt.Println("Got an error reading the config file(config.toml). ", err)
+		return
+	}
 
-	instanceID := flag.String("i", "", "The ID of the instance to start or stop")
-	state := flag.String("s", "STOP", "The state to put the instance in: START or STOP")
+	instanceID := viper.GetString("ec2_instance.id")
+
+	start := flag.Bool("start", false, "Start the instance.")
+	stop := flag.Bool("stop", false, "Stop the instance.")
 	flag.Parse()
 
-	if (*state != "START" && *state != "STOP") || *instanceID == "" {
-		fmt.Println("You must supply a START or STOP state and an instance ID")
-		fmt.Println("(-s START | STOP -i INSTANCE-ID")
+	if !*start && !*stop {
+		fmt.Println("You must supply a <start> or <stop> flag.")
+		fmt.Println("(-start | -stop)")
 		return
 	}
 
@@ -34,28 +39,28 @@ func main() {
 
 	svc := ec2.New(sess)
 
-	if *state == "START" {
-		err := controller.StartInstance(svc, instanceID)
+	if *start {
+		err := controller.StartInstance(svc, &instanceID)
 		if err != nil {
 			fmt.Println("Got an error starting instance")
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println("Started instance with ID " + *instanceID)
-	} else if *state == "STOP" {
-		err := controller.StopInstance(svc, instanceID)
+		fmt.Println("Started instance with ID " + instanceID)
+	} else if *stop {
+		err := controller.StopInstance(svc, &instanceID)
 		if err != nil {
 			fmt.Println("Got an error stopping the instance")
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println("Stopped instance with ID " + *instanceID)
+		fmt.Println("Stopped instance with ID " + instanceID)
 	}
 }
 
-func loadConfig() {
+func loadConfig() error {
 	viper.SetConfigName("config")
 	viper.SetConfigType("toml")
 
@@ -72,10 +77,12 @@ func loadConfig() {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			// Assign to a new var because of escaped new line error in println
 			exampleConfig := config.ExampleConfig
-			log.Fatalln("Configuration file not found. Please create config.toml using the below example.", exampleConfig)
+			fmt.Println("Configuration file not found. Please create config.toml using the below example.", exampleConfig)
+			return err
 		} else {
-			log.Fatalln("Error occurred while reading the config file: ", err)
+			return err
 		}
 	}
-	log.Println(viper.Get("aws_profile"))
+
+	return nil
 }
