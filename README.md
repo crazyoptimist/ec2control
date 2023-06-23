@@ -8,11 +8,34 @@ This is a CLI application that can start/stop AWS EC2 instances on demand.
 make build
 ```
 
-### Run
+It will generate binaries for linux and windows inside the `./bin` directory.
+
+### Configuration
+
+You need to create a `config.toml` file. The app will print the template if it does not exist.
+
+Config file path can be the same directory as the binary, or:
+
+- Linux
+
+`$HOME/.config/ec2/config.toml`
+
+- Windows
+
+`%AppData%\ec2\toml`
+
+### Usage
+
+- Linux
 
 ```bash
-AWS_REGION=us-east-1 ./bin/ec2 -s START -i <your-ec2-id>
-AWS_REGION=us-east-1 ./bin/ec2 -s STOP -i <your-ec2-id>
+./ec2control -start
+```
+
+- Windows
+
+```bash
+ec2control -start
 ```
 
 ### License
