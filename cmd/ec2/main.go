@@ -6,6 +6,8 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/spf13/viper"
@@ -21,6 +23,12 @@ func main() {
 		return
 	}
 
+	awsProfile := config.AWSProfile{
+		Region:             viper.GetString("aws_profile.region"),
+		AWSAccessKeyId:     viper.GetString("aws_profile.aws_access_key_id"),
+		AWSSecretAccessKey: viper.GetString("aws_profile.aws_secret_access_key"),
+	}
+
 	instanceID := viper.GetString("ec2_instance.id")
 
 	start := flag.Bool("start", false, "Start the instance.")
@@ -33,9 +41,16 @@ func main() {
 		return
 	}
 
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
+	sess := session.Must(
+		session.NewSession(&aws.Config{
+			Region: aws.String(awsProfile.Region),
+			Credentials: credentials.NewStaticCredentials(
+				awsProfile.AWSAccessKeyId,
+				awsProfile.AWSSecretAccessKey,
+				"",
+			),
+		}),
+	)
 
 	svc := ec2.New(sess)
 
