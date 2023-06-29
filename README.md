@@ -35,7 +35,7 @@ Config file path can be the same directory as the binary, or:
 - Windows
 
 ```bash
-ec2control -start
+ec2control.exe -start
 ```
 
 ### License
