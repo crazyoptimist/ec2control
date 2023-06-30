@@ -22,7 +22,7 @@ Config file path can be the same directory as the binary, or:
 
 - Windows
 
-`%AppData%\ec2\toml`
+`%AppData%\ec2\config.toml`
 
 ### Usage
 
