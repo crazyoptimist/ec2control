@@ -1,0 +1,13 @@
+project_name: ec2control
+builds:
+  - env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+nfpms:
+- maintainer: crazyoptimist <me@crazyoptimist.net>
+  description: Turn on/off AWS EC2 instances on demand.
+  homepage: https://github.com/crazyoptimist/ec2control
+  license: MIT
