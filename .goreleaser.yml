@@ -1,10 +1,24 @@
 project_name: ec2control
 builds:
-- env:
-    - CGO_ENABLED=0
-  main: ./cmd/ec2/
-  goos:
-    - linux
-    - windows
-  goarch:
-    - amd64
+  - #
+    env:
+      - CGO_ENABLED=0
+    main: .
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+signs:
+  - #
+    artifacts: binary
+archives:
+  - #
+    format_overrides:
+      - # Which GOOS to override the format for.
+        goos: windows
+        # The format to use for the given GOOS.
+        # Valid options are `tar.gz`, `tgz`, `tar.xz`, `txz`, tar`, `gz`, `zip`, `binary`, and `none`.
+        # Default is `tar.gz`
+        format: zip

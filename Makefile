@@ -1,5 +1,4 @@
 APP_NAME=ec2control
-VERSION=2.0.0
 
 test:
 	go test -v ./...
