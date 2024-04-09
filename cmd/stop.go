@@ -22,23 +22,32 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
+	"log"
 
+	"ec2control/pkg/controller"
+
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // stopCmd represents the stop command
 var stopCmd = &cobra.Command{
 	Use:   "stop",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Stops the EC2 instance",
+	Long:  `Stops the EC2 instance`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("stop called")
+		initConfig()
+		awsProfile := getAWSProfile()
+		instanceID := viper.GetString("EC2InstanceID")
+
+		ec2Client := getEC2Client(*awsProfile)
+
+		err := controller.StopInstance(ec2Client, aws.String(instanceID))
+		if err != nil {
+			log.Fatalln("Stopping EC2 instance failed: ", err)
+		}
+		log.Println("Stopped instance with ID " + instanceID)
 	},
 }
 

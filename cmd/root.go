@@ -9,6 +9,10 @@ import (
 
 	"ec2control/pkg/utils"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -70,4 +74,27 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalln("Config file not found, please create one using 'config' command.")
 	}
+}
+
+func getAWSProfile() *AWSProfile {
+	return &AWSProfile{
+		Region:             viper.GetString("AWSProfile.Region"),
+		AWSAccessKeyId:     viper.GetString("AWSProfile.AWSAccessKeyId"),
+		AWSSecretAccessKey: viper.GetString("AWSProfile.AWSSecretAccessKey"),
+	}
+}
+
+func getEC2Client(awsProfile AWSProfile) *ec2.EC2 {
+	sess := session.Must(
+		session.NewSession(&aws.Config{
+			Region: aws.String(awsProfile.Region),
+			Credentials: credentials.NewStaticCredentials(
+				awsProfile.AWSAccessKeyId,
+				awsProfile.AWSSecretAccessKey,
+				"",
+			),
+		}),
+	)
+
+	return ec2.New(sess)
 }
